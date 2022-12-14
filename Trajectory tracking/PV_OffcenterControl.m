@@ -1,0 +1,4 @@
+function [wL, wR] = PV_OffcenterControl(x_ref, y_ref, theta_ref, x_ref_dot, y_ref_dot, omega_ref, x, y, theta, r, b, e, Kp)
+wL = (((Kp * e ^ 2 - b * e * omega_ref) * cos(theta_ref) + (-Kp * b * e - e ^ 2 * omega_ref) * sin(theta_ref) + ((-x + x_ref) * Kp + x_ref_dot) * e - b * ((-y + y_ref) * Kp + y_ref_dot)) * cos(theta) + ((Kp * b * e + e ^ 2 * omega_ref) * cos(theta_ref) + (Kp * e ^ 2 - b * e * omega_ref) * sin(theta_ref) + ((-y + y_ref) * Kp + y_ref_dot) * e + b * ((-x + x_ref) * Kp + x_ref_dot)) * sin(theta) - Kp * e ^ 2) / r / e;
+wR = (((Kp * e ^ 2 + b * e * omega_ref) * cos(theta_ref) + (Kp * b * e - e ^ 2 * omega_ref) * sin(theta_ref) + ((-x + x_ref) * Kp + x_ref_dot) * e + b * ((-y + y_ref) * Kp + y_ref_dot)) * cos(theta) + ((-Kp * b * e + e ^ 2 * omega_ref) * cos(theta_ref) + (Kp * e ^ 2 + b * e * omega_ref) * sin(theta_ref) + ((-y + y_ref) * Kp + y_ref_dot) * e - b * ((-x + x_ref) * Kp + x_ref_dot)) * sin(theta) - Kp * e ^ 2) / r / e;
+end
