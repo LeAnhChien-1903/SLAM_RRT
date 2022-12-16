@@ -9,10 +9,7 @@ clc;clear;close all;
 
 img = imread("map_full.png");
 binary_img = imbinarize(img);
-
-imshow(binary_img);
-figure(1)
-x_cur = [134,274];
+x_cur = [134,274,  0];
 x_real = convertPixelToReal(x_cur, 10, 20);
 disp(x_real)
 [h,w] = RRT(x_cur, binary_img, 500);

@@ -1,37 +1,30 @@
-function [height, width] = RRT(pose, map, iter_max)
-
+function [height, width] = RRT(x_cur, map)
 s= size(map);
 height_map = s(1);
 width_map = s(2);
 
 % chuyển đổi gốc tọa độ của ảnh sang gốc tọa độ của toàn cục
-pose(1) = height_map - pose(1) ;
+x_cur(1) = height_map - x_cur(1) ;
 
 
 % lưu giá trị của lần lượt của các node
-height_value = [pose(1)];
-width_value = [pose(2)];
-
-% 
-figure(1)
-imshow(map);
-hold on;
+height_value = [x_cur(1)];
+width_value = [x_cur(2)];
 
 %% RRT ALGORITHM
 % initialize graph tree
 node_index = 1;
 source_node = [node_index];
 target_node = [];
-nodes_height(node_index) = pose(1);
-nodes_width(node_index) = pose(2);
+nodes_height(node_index) = x_cur(1);
+nodes_width(node_index) = x_cur(2);
 rrt_graph = graph(source_node,target_node);
-rrt_plot = plot(rrt_graph, 'w','XData', nodes_width, 'YData', nodes_height,'NodeLabel',{});
 
 iterations = 1;
 % check stopping condition 
 while 1
     iterations = iterations + 1;
-    if iterations == iter_max
+    if iterations == 100
         break
     end
     % select direction state
@@ -48,47 +41,35 @@ while 1
 
     % move towards x_rand position
     delta = move(x_near,x_rand); % khoảng tiến của mỗi node
-    pose = x_near + delta;
+    x_cur = x_near + delta;
     if delta < 0
-        pose = [max(1, pose(1)), max(1, pose(2))];
+        x_cur = [max(1, x_cur(1)), max(1, x_cur(2))];
     elseif delta > 0
-        pose = [min(height_map, pose(1)), min(width_map, pose(2))];
+        x_cur = [min(height_map, x_cur(1)), min(width_map, x_cur(2))];
     end
     % kiểm tra xem có vật cản ở đấy không
-    if checkIntersect(pose,map) < 10
+    if checkIntersect(x_cur,map) < 10
         % check if the node already exists
         exists_node = false;
         for i=1:node_index
-            if pose(1) == nodes_height(node) && pose(2) == nodes_width(node)
+            if x_cur(1) == nodes_height(node) && x_cur(2) == nodes_width(node)
                exists_node = true;
                break
             end
         end
         if exists_node == false
-            % vẽ node
-%             hold on;
-%             scatter(x_cur(2), x_cur(1), 10, "red","filled");
-
             % add current state as a node to the graph tree
             node_index = node_index + 1;
             rrt_graph = addnode(rrt_graph,1);
             rrt_graph = addedge(rrt_graph,nearest_node,node_index);
-            nodes_height(node_index) = pose(1);
-            nodes_width(node_index) = pose(2);
-            height_value = [height_value, pose(1)];
-            width_value = [width_value, pose(2)];
+            nodes_height(node_index) = x_cur(1);
+            nodes_width(node_index) = x_cur(2);
+            height_value = [height_value, x_cur(1)];
+            width_value = [width_value, x_cur(2)];
 
         end
     end
-    delete(rrt_plot)
-    rrt_plot = plot(rrt_graph, 'r','XData', nodes_width, 'YData', nodes_height,'NodeLabel',{}, 'LineWidth', 1, 'MarkerSize', 2);
-    grid on
-    pbaspect([1 1 1])
-    xlim([1 height_map])
-    ylim([1 width_map])
-    pause(0.01)
 end
-hold off
 
 %% dùng A* để tìm đường đi ngắn nhất giữa 2 node
 spath = 0;
@@ -101,8 +82,6 @@ for i = 1: node_index
         spath = tmp;
     end
 end
-highlight(rrt_plot,spath,'NodeColor','g','EdgeColor','g');
-
 %% tọa độ lần lượt chiều cao và chiều dài của ảnh mà robot cần di chuyển lượt tiếp theo
 height = [];
 width = [];
@@ -110,6 +89,7 @@ for i = spath
     height = [height, height_value(i)];
     width = [width, width_value(i)];
 end
+
 % chuyển về theo gốc tọa độ toàn cục
 height = height_map - height;
 

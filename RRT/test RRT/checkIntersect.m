@@ -6,8 +6,8 @@ width = s(2);
 
 
 
-window_height = [max(1, x_cur(1) - 9), min(height, x_cur(1) + 9)];
-window_width = [max(1, x_cur(2) - 9), min(width, x_cur(2) + 9)];
+window_height = [max(1, x_cur(1) - 7), min(height, x_cur(1) + 7)];
+window_width = [max(1, x_cur(2) - 7), min(width, x_cur(2) + 7)];
 count = 0;
 for i = window_height(1) : window_height(2)
     for j = window_width(1): window_width(2)

@@ -2,6 +2,7 @@ function [x_ref, y_ref, theta_ref, x_ref_dot, y_ref_dot, v_ref, omega_ref, t_ref
 iter_max = computeInterations(binary_map);
 currentPoint = convertRealToPixel([pose(2), pose(1)], scale);
 theta = pose(3);
+
 [y_target, x_target] = RRT(currentPoint, binary_map, iter_max);
 y_target = convertPixelToReal(y_target, delta, scale);
 x_target = convertPixelToReal(x_target, delta, scale);
